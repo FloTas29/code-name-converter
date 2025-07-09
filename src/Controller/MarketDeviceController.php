@@ -12,7 +12,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class MarketDeviceController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -25,7 +28,7 @@ class MarketDeviceController extends AbstractController
      * @return Response
      * @Route("/market-device/{techModel}", name="get_market_device")
      */
-    public function getMarketDevice(SerializerInterface $serializer, $techModel): Response
+    public function getMarketDevice(SerializerInterface $serializer, $techModel)
     {
         $repo = $this->entityManager->getRepository(MarketDevice::class);
         $marketDevice = $repo->findOneBy(['techModel' => $techModel]);
