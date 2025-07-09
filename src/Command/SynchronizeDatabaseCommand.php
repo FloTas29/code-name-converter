@@ -14,8 +14,15 @@ class SynchronizeDatabaseCommand extends Command
     protected static $defaultName = 'app:synchronize-database';
     protected static $defaultDescription = 'Synchronise la base de données de modèles';
 
-    private EntityManagerInterface $em;
-    private HttpClientInterface $httpClient;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var HttpClientInterface
+     */
+    private $httpClient;
 
     public function __construct(
         HttpClientInterface $httpClient,
