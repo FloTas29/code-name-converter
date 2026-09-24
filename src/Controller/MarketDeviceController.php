@@ -3,6 +3,7 @@
 namespace Cordon\CodeNameConverterBundle\Controller;
 
 use Cordon\CodeNameConverterBundle\Entity\MarketDevice;
+use Cordon\CodeNameConverterBundle\Interfaces\MarketNameProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,9 +18,10 @@ class MarketDeviceController extends AbstractController
      */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, MarketNameProvider $provider)
     {
         $this->entityManager = $entityManager;
+        $this->provider = $provider;
     }
 
     /**
@@ -30,8 +32,12 @@ class MarketDeviceController extends AbstractController
      */
     public function getMarketDevice(SerializerInterface $serializer, $techModel)
     {
-        $repo = $this->entityManager->getRepository(MarketDevice::class);
-        $marketDevice = $repo->findOneBy(['techModel' => $techModel]);
+        $marketDevice = $this->provider->getMarketName("apple", $techModel);
+
+        if (is_null($marketDevice)) {
+            $repo = $this->entityManager->getRepository(MarketDevice::class);
+            $marketDevice = $repo->findOneBy(['techModel' => $techModel]);
+        }
 
         if (!is_null($marketDevice)) {
             $json = $serializer->serialize($marketDevice, 'json', [
